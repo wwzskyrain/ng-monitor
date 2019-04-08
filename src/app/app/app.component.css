@@ -1,0 +1,25 @@
+.appTitle {
+    color: #2486e0;
+    font-weight: bold;
+    font-size: 1.3em;
+    text-shadow: 1px 1px #DDD;
+    display: inline-block; 
+    cursor: pointer;
+    margin-right: 15px;
+}
+
+.appHead {
+    padding-top: 10px;
+    width: 100%;
+    margin-bottom: 10px;
+    line-height: 24px;
+}
+
+.appItem {
+    padding-left: 10px;
+    padding-right: 10px;
+    border: lightgray 1px solid;
+    border-radius: 10px;
+    flex-direction: column; 
+    width: 100%
+}

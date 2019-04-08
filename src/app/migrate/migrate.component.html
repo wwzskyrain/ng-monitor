@@ -1,0 +1,96 @@
+<nz-card style="margin-bottom: 5px" nzTitle="新建任务">
+  <form nz-form>
+    <nz-alert *ngIf="errorMsg" nzType="error" nzMessage="{{errorMsg}}" nzShowIcon></nz-alert>
+    <nz-form-item>
+      <nz-form-label [nzSpan]="6" nzFor="queue">选择死信队列</nz-form-label>
+      <nz-form-control [nzSpan]="14">
+        <nz-select name="queue" [(ngModel)]="migrateFromQueue" nzShowSearch nzAllowClear nzPlaceHolder="Choose Dead Queue"
+          (ngModelChange)="onSelectQueueChanged($event)">
+          <nz-option-group *ngFor="let group of deadQueueGroups" [nzLabel]="groupLabel">
+            <ng-template #groupLabel>
+              <nz-tag [nzColor]="'orange'">{{group.host}}</nz-tag>
+            </ng-template>
+            <nz-option *ngFor="let queue of group.queues" [nzValue]="queue" nzLabel="{{queue.name}} [{{queue.messagesReady}}]"></nz-option>
+          </nz-option-group>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label [nzSpan]="6" nzFor="exchange">选择迁移的Exchange</nz-form-label>
+      <nz-form-control [nzSpan]="14">
+        <nz-select name="exchange" [(ngModel)]="migrateToExchange" nzShowSearch nzAllowClear nzPlaceHolder="Choose Exchange"
+          (ngModelChange)="onSelectExchange($event)">
+          <nz-option *ngFor="let exchange of exchanges" nzValue="{{exchange.name}}" nzLabel="{{exchange.name}}"></nz-option>
+        </nz-select>
+        <nz-tag *ngIf="selectExchange" [nzColor]="'geekblue'">{{selectExchange.type}}</nz-tag>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item *ngIf="bindInfo && bindInfo.length > 0">
+      <nz-form-label [nzSpan]="6" nzFor="routingkey">选择发送的routingkey</nz-form-label>
+      <nz-form-control [nzSpan]="14">
+          <nz-radio-group name="routingkey" [(ngModel)]="routingKey">
+            <label class="routingKey" *ngFor="let bind of bindInfo" nz-radio nzValue="{{bind.routingKey}}">
+                使用Key: <nz-tag [nzColor]="'volcano'">{{bind.routingKey}}</nz-tag>
+                <br>
+                <span style="margin-left: 28px">消息将被Exchange路由到 {{bind.destinationType}}:</span>
+                <nz-tag [nzColor]="'blue'">{{bind.destination}}</nz-tag>
+            </label>
+          </nz-radio-group>
+
+          <nz-alert  nzType="info"
+          nzMessage="如果不选择RoutingKey,迁移消息将使用消息自带的RoutingKey."
+          nzShowIcon></nz-alert>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label [nzSpan]="6" nzFor="speed">消耗速度</nz-form-label>
+      <nz-form-control [nzSpan]="14">
+        <nz-input-number name="speed" [(ngModel)]="consumSpeed" [nzMin]="1" [ngModelOptions]="{standalone: true}"></nz-input-number>
+        <span style="margin-left: 10px">条/秒</span>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <button style="float: right;" nz-button nzType="primary" (click)="createMigrateTask()">提交</button>
+    </nz-form-item>
+  </form>
+</nz-card>
+
+<nz-card nzTitle="任务队列" [nzExtra]="extraTemplate">
+  <ng-template #extraTemplate>
+    <button nz-button nzType="primary" (click)="queryMigrateTask()">刷新</button>
+  </ng-template>
+  <nz-list [nzDataSource]="migrateTasks" [nzItemLayout]="'horizontal'" [nzRenderItem]="item">
+    <ng-template #item let-item>
+      <nz-list-item [nzContent]="content" [nzActions]="item.suspend ? [delAction,resumeAction] : [delAction,suspendAction]">
+        <nz-skeleton [nzAvatar]="true" [nzActive]="true" [nzTitle]="item.fromQueue" [nzLoading]="false">
+          <ng-template #content>
+            <nz-progress [nzPercent]="item.migrateMessageCount*100/item.migrateTotalCount" [nzFormat]="percentFormat"
+              [nzWidth]="48" nzType="circle"></nz-progress>
+          </ng-template>
+          <ng-template #delAction><a (click)="cancelTask(item)">删除</a></ng-template>
+          <ng-template #suspendAction><a (click)="suspendTask(item)">暂停</a></ng-template>
+          <ng-template #resumeAction><a (click)="resumeTask(item)">继续</a></ng-template>
+          <ng-template #description>
+            <p>从队列:<nz-tag [nzColor]="'blue'">{{item.fromQueue}}</nz-tag></p>
+            <p>迁移到:<nz-tag [nzColor]="'blue'">{{item.toExchange}}</nz-tag></p>
+            <p *ngIf="item.routingKey !== null">RoutingKey: <nz-tag [nzColor]="'volcano'">{{item.routingKey}}</nz-tag></p>
+            <p *ngIf="item.routingKey === null">RoutingKey: <nz-tag [nzColor]="'orange'">使用原消息的RoutingKey</nz-tag></p>
+            <p>每秒钟迁移消息数: {{item.consumerSpeed}}
+            <span style="margin-left: 40px">迁移进度: {{item.migrateMessageCount}}/{{item.migrateTotalCount}}</span>
+            </p>
+            <p>由<span class="opsName"><i nz-icon type="user" class="mr5"></i>{{item.createByOpsName}}</span>
+              在<span class="time"><i nz-icon type="clock-circle" class="mr5"></i>{{item.createTime | date:'yyyy-MM-dd HH:mm:ss'}}</span>创建
+          </ng-template>
+          <nz-list-item-meta [nzTitle]="nzTitle" nzAvatar="https://image.flaticon.com/icons/png/512/31/31700.png"
+            [nzDescription]="description">
+            <ng-template #nzTitle>任务ID:{{item.taskID}}</ng-template>
+          </nz-list-item-meta>
+        </nz-skeleton>
+      </nz-list-item>
+    </ng-template>
+  </nz-list>
+</nz-card>

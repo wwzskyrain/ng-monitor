@@ -1,0 +1,74 @@
+<nz-card style="margin-bottom: 5px" nzTitle="新建Rabbit源">
+  <form nz-form>
+    <nz-form-item>
+      <nz-form-label [nzSpan]="6" nzFor="host">Host</nz-form-label>
+      <nz-form-control [nzSpan]="14">
+        <input nz-input [(ngModel)]="inputNode.host" [ngModelOptions]="{standalone: true}">
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label [nzSpan]="6" nzFor="port">Port</nz-form-label>
+      <nz-form-control [nzSpan]="14">
+        <input nz-input [(ngModel)]="inputNode.port" [ngModelOptions]="{standalone: true}">
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label [nzSpan]="6" nzFor="user">User</nz-form-label>
+      <nz-form-control [nzSpan]="14">
+        <input nz-input [(ngModel)]="inputNode.user" [ngModelOptions]="{standalone: true}">
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label [nzSpan]="6" nzFor="password">Password</nz-form-label>
+      <nz-form-control [nzSpan]="14">
+        <input nz-input [(ngModel)]="inputNode.password" [ngModelOptions]="{standalone: true}">
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label [nzSpan]="6" nzFor="webAdminAddrInternal">生产内网地址</nz-form-label>
+      <nz-form-control [nzSpan]="14">
+        <input nz-input [(ngModel)]="inputNode.webAdminAddrInternal" [ngModelOptions]="{standalone: true}">
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label [nzSpan]="6" nzFor="webAdminAddr">开发访问地址</nz-form-label>
+      <nz-form-control [nzSpan]="14">
+        <input nz-input [(ngModel)]="inputNode.webAdminAddr" [ngModelOptions]="{standalone: true}">
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-control [nzSpan]="14" [nzOffset]="6">
+        <button nz-button nzType="primary" (click)="addNode()">提交</button>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</nz-card>
+
+<nz-table #nzTable [nzData]="nodes" [nzPageSize]="10">
+  <thead>
+    <tr>
+      <th>Host</th>
+      <th>Port</th>
+      <th>生产内网地址</th>
+      <th>开发访问地址</th>
+      <th>操作</th>
+    </tr>
+  </thead>
+  <tbody>
+    <ng-template ngFor let-node [ngForOf]="nzTable.data">
+      <tr>
+        <td>{{node.host}}</td>
+        <td>{{node.port}}</td>
+        <td>{{node.webAdminAddrInternal}}</td>
+        <td>{{node.webAdminAddr}}</td>
+        <td><button nz-button nzType="danger" (click)="deleteNode(node)">Delete</button></td>
+      </tr>
+    </ng-template>
+  </tbody>
+</nz-table>

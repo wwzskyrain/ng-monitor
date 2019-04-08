@@ -1,0 +1,8 @@
+.routingKey {
+    display: block;
+    border: lightblue 1px solid;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    background-color: #fafdff;
+}

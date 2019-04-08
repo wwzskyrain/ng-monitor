@@ -1,0 +1,39 @@
+.body {
+    z-index: 0;
+}
+
+.container {
+    width: 1000px;
+    margin: 40px auto;
+}
+
+.header {
+    z-index: 1000;
+    background-color: #292961;
+    padding: 0 16px;
+    min-height: 40px;
+    border: 0;
+    border-bottom: 1px solid #e5e5e5;
+    position: fixed;
+    font-size: 14px;
+    line-height: 1.428571429;
+    left: 0;
+    right: 0;
+    top: 0;
+}
+
+.header-container {
+    display: flex;
+    align-items: center;
+    height: 40px;
+}
+
+.header .logo {
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+}
+
+.header span {
+    color: whitesmoke;
+}

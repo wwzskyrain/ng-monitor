@@ -1,0 +1,43 @@
+<div class="body">
+
+<div class="header">
+  <div class="header-container">
+    <img src="assets/logo.png" class="logo">
+    <span>Hi, {{opsService.ops.realName}} welcome to rabbit dead letter queue monitor!</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <app-queuedrawer #drawer></app-queuedrawer>
+
+  <nz-tabset>
+    <nz-tab nzTitle="死信队列">
+      <nz-button-group>
+        <button nz-button nzType="primary" (click)="queryDeadQueue()">刷新列表</button>
+        <button nz-button nzType="primary" (click)="forceQueryDeadQueue()">重新同步DeadQueue信息</button>
+      </nz-button-group>
+
+      <ul style="margin-top: 10px">
+        <li *ngFor="let queue of deadQueues" class="li-item">
+          <nz-tag [nzColor]="cyrb53(queue.host)">{{queue.host}}</nz-tag>
+          <a href="#" (click)="drawer.show(queue);">{{queue.name}} </a> [{{queue.messagesReady}}]
+        </li>
+      </ul>
+    </nz-tab>
+    <nz-tab nzTitle="服务与死信队列">
+      <app-app ></app-app>
+    </nz-tab>
+    <nz-tab nzTitle="消息迁移工具">
+      <app-migrate></app-migrate>
+    </nz-tab>
+    <nz-tab nzTitle="通知设置">
+      <app-setting></app-setting>
+    </nz-tab>
+    <nz-tab nzTitle="Rabbit配置">
+      <app-node></app-node>
+    </nz-tab>
+  </nz-tabset>
+</div>
+
+</div>

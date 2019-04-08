@@ -1,0 +1,122 @@
+<nz-card nzTitle="默认设置">
+  <nz-input-group style="margin-bottom: 5px; position: relative;" *ngFor="let setting of settings" [nzAddOnBefore]="label"
+    [nzAddOnAfter]="edit">
+    <ng-template #label>
+      <span style="width: 200px; display: inline-block;">{{setting.desc}}</span>
+    </ng-template>
+    <ng-template #edit>
+      <i nz-icon style="color: #1890ff;" type="edit" (click)="editBox.style.width = '' + settingInput.clientWidth + 'px' ;show(editBox)"></i>
+    </ng-template>
+    <input #settingInput type="text" nz-input [disabled]="true" [ngModel]="setting.value">
+    <div #editBox style="position: absolute; bottom: 0; display: none;">
+      <nz-input-group nzSearch [nzSuffix]="suffixButton">
+        <input #newInput type="text" nz-input placeholder="请输入新值" value="{{setting.value}}">
+      </nz-input-group>
+      <ng-template #suffixButton>
+        <button nz-button (click)="hide(editBox)">取消</button>
+        <button nz-button nzType="primary" (click)="hide(editBox);commitSetting(setting, newInput);">提交</button>
+      </ng-template>
+    </div>
+  </nz-input-group>
+</nz-card>
+
+<nz-modal *ngIf="selectGroup" [nzVisible]="selectGroup" nzTitle="修改钉钉Token" (nzOnCancel)="handleTokenCancel()" (nzOnOk)="handleTokenOk()">
+  <form nz-form>
+    <div nz-row nzGutter="8">
+      <div nz-col>
+        <nz-form-item>
+          <nz-form-label nzSpan="4">分组名</nz-form-label>
+          <nz-form-control nzSpan="16">
+            <input nz-input name="newGroupName" [ngModel]="selectGroup.groupName" [disabled]="true">
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div nz-col>
+        <nz-form-item>
+          <nz-form-label nzSpan="4">钉钉Token</nz-form-label>
+          <nz-form-control nzSpan="16">
+              <input nz-input name="newDingdingToken" [(ngModel)]="newDingdingToken" >
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+  </form>
+</nz-modal>
+
+<nz-modal [(nzVisible)]="isVisible" nzTitle="新增通知分组" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
+  <form nz-form>
+    <div nz-row nzGutter="8">
+      <div nz-col>
+        <nz-form-item>
+          <nz-form-label nzSpan="4">分组名</nz-form-label>
+          <nz-form-control nzSpan="16">
+            <input nz-input name="newGroupName" [(ngModel)]="newGroupName" >
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div nz-col>
+        <nz-form-item>
+          <nz-form-label nzSpan="4">钉钉Token</nz-form-label>
+          <nz-form-control nzSpan="16">
+              <input nz-input name="newDingdingToken" [(ngModel)]="newDingdingToken" >
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+  </form>
+</nz-modal>
+
+<nz-card style="margin-top: 5px" nzTitle="通知分组" [nzExtra]="extraTemplate">
+  <ng-template #extraTemplate>
+    <a (click)="showModal()"><i nz-icon type="plus-circle" theme="outline" style="margin-right: 5px"></i>新增分组</a>
+  </ng-template>
+  <nz-list [nzDataSource]="notifyGroups" [nzRenderItem]="itemTemplate">
+    <ng-template #itemTemplate let-group>
+      <nz-list-item>
+        <div>
+            <h3>{{group.groupName}}</h3>
+            <p><i nz-icon type="unlock" class="mr5"></i>钉钉Token: 
+              <span class="token">{{group.dingdingToken}}</span>
+              <button nz-button nzSize="small" (click)="updateToken(group)">修改</button></p>
+            <div style="margin-bottom: 10px">
+            <p>服务列表:</p>
+            <nz-tag
+              *ngFor="let app of group.appNames"
+              [nzMode]="'closeable'"
+              (nzAfterClose)="deleteAppFromGroup(app, group.id)"
+            >
+              {{ app }}
+            </nz-tag>
+            <input
+              #inputElement
+              nz-input
+              nzSize="small"
+              *ngIf="group.modifyApp"
+              type="text"
+              [(ngModel)]="inputValue"
+              style="width: 78px;"
+              (blur)="handleInputConfirm(group)"
+              (keydown.enter)="handleInputConfirm(group)"
+            />
+            <nz-tag *ngIf="!group.modifyApp" nzNoAnimation (click)="showInput(group, inputElement)">
+              <i nz-icon type="plus"></i> 新增服务名
+            </nz-tag>
+            </div>
+
+            <p>由<span class="opsName"><i nz-icon type="user" class="mr5"></i>{{group.createBy}}</span> 
+              在<span class="time"><i nz-icon type="clock-circle" class="mr5"></i>{{group.createTime | date:'yyyy-MM-dd HH:mm:ss'}}</span>创建</p>
+        </div>
+      </nz-list-item>
+    </ng-template>
+  </nz-list>
+</nz-card>
+<!--
+<div #host>
+  <nz-input-group>
+    <input #newInput type="text" nz-input placeholder="host" [(ngModel)]="api.host">
+    <button nz-button (click)="hide(host)">隐藏</button>
+  </nz-input-group>
+</div>
+-->

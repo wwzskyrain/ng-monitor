@@ -1,0 +1,63 @@
+<app-queuedrawer #drawer></app-queuedrawer>
+<nz-card style="margin-bottom: 5px" nzTitle="过滤设置">
+<form nz-form>
+  <div nz-row nzGutter="8">
+    <div nz-col>
+      <nz-form-item>
+        <nz-form-label nzSpan="4">appName</nz-form-label>
+        <nz-form-control nzSpan="16">
+          <nz-select name="app" [(ngModel)]="appNameFilter" nzShowSearch nzAllowClear
+            (ngModelChange)="onAppNameFilterChanged($event)">
+            <nz-option *ngFor="let a of appOptions" [nzValue]="a" [nzLabel]="a"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+</form>
+</nz-card>
+
+<nz-card nzTitle="服务列表" [nzExtra]="extraTemplate">
+<ng-template #extraTemplate>
+  <label nz-checkbox [(ngModel)]="queryAllQueue">显示所有服务</label>
+  <button nz-button nzType="primary" (click)="refresh()">刷新</button>
+</ng-template>
+<nz-list [nzSplit]="false" [nzDataSource]="displayApps" [nzRenderItem]="itemTemplate">
+  <ng-template #itemTemplate let-app>
+    <nz-list-item>
+      <div class="appItem">
+        <div class="appHead" (click)="app.expand = !app.expand">
+            <span class="appTitle">{{app.appName}}</span>
+            <a target="_blank" [href]="xdcsLink(app.appName)">
+              <i nz-icon type="link" theme="outline"></i>xdcs</a>
+            <div style="float: right; margin-right: 10px">
+              <nz-tag *ngFor="let admin of app.admins" [nzColor]="'geekblue'">{{admin.name}}</nz-tag>
+              <nz-badge [nzCount]="app.queueInfoList.length">
+                <a style="padding-right: 15px" href="#">{{app.expand ? '折叠' : '展开'}}</a>
+              </nz-badge>
+            </div>
+        </div>
+
+      <nz-table [nzSize]='small' style="margin-top: 10px" *ngIf="app.expand" #basicTable [nzData]="app.queueInfoList"
+        [nzHideOnSinglePage]="true">
+        <thead (nzSortChange)="sort($event, app)" nzSingleSort>
+          <tr>
+            <th nzShowSort nzSortKey="name">队列名</th>
+            <th>Host</th>
+            <th nzShowSort nzSortKey="messagesReady">堆积消息数</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of basicTable.data">
+            <td><a href="#" (click)="drawer.show(data);">{{data.name}}</a></td>
+            <td>{{data.host}}</td>
+            <td>{{data.messagesReady}}</td>
+          </tr>
+        </tbody>
+      </nz-table>
+      </div>
+
+    </nz-list-item>
+  </ng-template>
+</nz-list>
+</nz-card>

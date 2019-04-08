@@ -1,1 +1,28 @@
 /* You can add global styles to this file, and also import other style files */
+.opsName {
+    color: #707070;
+    font-size: 12px;
+    line-height: 20px;
+    padding: 2px 10px;
+    margin: 0 5px;
+    border: 1px solid #52c41a;
+    background-color: #e8f9df;
+    border-radius: 100px;
+    font-weight: 400;
+}
+
+.time {
+    color: #707070;
+    font-size: 12px;
+    line-height: 20px;
+    padding: 2px 10px;
+    margin: 0 5px;
+    border: 1px solid #52c41a;
+    background-color: #e8f9df;
+    border-radius: 100px;
+    font-weight: 400;
+}
+
+.mr5 {
+    margin-right: 5px;
+}
