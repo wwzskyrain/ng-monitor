@@ -15,6 +15,7 @@ import { SettingComponent } from './setting/setting.component';
 import { NodeComponent } from './node/node.component';
 import { AppQueueComponent } from './app/app.component';
 import { QueuedrawerComponent } from './queuedrawer/queuedrawer.component';
+import { CustomQueueDialogComponent } from './custom-queue-dialog/custom-queue-dialog.component';
 
 registerLocaleData(zh);
 
@@ -26,7 +27,8 @@ registerLocaleData(zh);
     SettingComponent,
     NodeComponent,
     AppQueueComponent,
-    QueuedrawerComponent
+    QueuedrawerComponent,
+    CustomQueueDialogComponent
   ],
   imports: [
     BrowserModule,

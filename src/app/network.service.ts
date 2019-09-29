@@ -12,6 +12,7 @@ import { environment } from '../environments/environment';
 import { AppItem } from './model/appItem';
 import { Ops } from './model/opsItem';
 import { NotifyGroupItem } from './model/notifyGroupItem';
+import { Page } from './model/page';
 
 @Injectable({
   providedIn: 'root'
@@ -68,19 +69,21 @@ export class NetworkService {
     return this.http.get<LResponse<QueueItem>>(url);
   }
 
-  queryMigrateTaskList(): Observable<LResponse<MigrateItem>> {
-    const url = this.host + 'migrate/';
-    return this.http.get<LResponse<MigrateItem>>(url);
+  queryMigrateTaskList(page: number): Observable<OResponse<Page<MigrateItem>>> {
+    const url = this.host + `migrate/${page}`;
+    return this.http.get<OResponse<Page<MigrateItem>>>(url);
   }
 
-  createMigrateTask(host: string, from: string, to: string, key: string, consumSpeed: number): Observable<LResponse<MigrateItem>> {
+  createMigrateTask(host: string, from: string, to: string, key: string,
+    consumSpeed: number, taskCount: number): Observable<OResponse<Page<MigrateItem>>> {
     const url = this.host + 'migrate/create';
-    return this.http.post<LResponse<MigrateItem>>(url, {
+    return this.http.post<OResponse<Page<MigrateItem>>>(url, {
       host: host,
       fromQueue: from,
       toExchange: to,
       consumerSpeed: consumSpeed,
-      routingKey: key
+      routingKey: key,
+      total: taskCount,
     });
   }
 
@@ -92,19 +95,19 @@ export class NetworkService {
     });
   }
 
-  suspendMigrateTask(id: number): Observable<LResponse<MigrateItem>> {
-    const url = this.host + `migrate/suspend/${id}`;
-    return this.http.get<LResponse<MigrateItem>>(url);
+  suspendMigrateTask(page: number, id: number): Observable<OResponse<Page<MigrateItem>>> {
+    const url = this.host + `migrate/suspend/${page}/${id}`;
+    return this.http.get<OResponse<Page<MigrateItem>>>(url);
   }
 
-  resumeMigrateTask(id: number): Observable<LResponse<MigrateItem>> {
-    const url = this.host + `migrate/resume/${id}`;
-    return this.http.get<LResponse<MigrateItem>>(url);
+  resumeMigrateTask(page: number, id: number): Observable<OResponse<Page<MigrateItem>>> {
+    const url = this.host + `migrate/resume/${page}/${id}`;
+    return this.http.get<OResponse<Page<MigrateItem>>>(url);
   }
 
-  cancelMigrateTask(id: number): Observable<LResponse<MigrateItem>> {
-    const url = this.host + `migrate/cancel/${id}`;
-    return this.http.get<LResponse<MigrateItem>>(url);
+  cancelMigrateTask(page: number, id: number): Observable<OResponse<Page<MigrateItem>>> {
+    const url = this.host + `migrate/cancel/${page}/${id}`;
+    return this.http.get<OResponse<Page<MigrateItem>>>(url);
   }
 
   queryNodes(): Observable<LResponse<NodeItem>> {
@@ -153,5 +156,20 @@ export class NetworkService {
   updateDingDingToken(id: number, dingdingToken: string): any {
     const url = this.host + `notifyGroup/update_token/${id}/${dingdingToken}`;
     return this.http.get<LResponse<NotifyGroupItem>>(url);
+  }
+
+  getBusinessCustomQueueList(): Observable<LResponse<string>> {
+    const url = this.host + `queue/get-business-queue`;
+    return this.http.get<LResponse<string>>(url);
+  }
+
+  addBusinessCustomQueue(queueName: string): Observable<OResponse<string>> {
+    const url = this.host + `queue/add-business-queue/${queueName}`;
+    return this.http.get<OResponse<string>>(url);
+  }
+
+  removeBusinessCustomQueue(queueName: string): Observable<OResponse<string>> {
+    const url = this.host + `queue/remove-business-queue/${queueName}`;
+    return this.http.get<OResponse<string>>(url);
   }
 }

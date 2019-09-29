@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { SettingItem } from '../model/settingItem';
 import { NetworkService } from '../network.service';
 import { NotifyGroupItem } from '../model/notifyGroupItem';
+import { QueuesService } from '../queues.service';
 
 @Component({
   selector: 'app-setting',
@@ -9,6 +10,7 @@ import { NotifyGroupItem } from '../model/notifyGroupItem';
   styleUrls: ['./setting.component.css']
 })
 export class SettingComponent implements OnInit {
+  appNames: string[];
   settings: SettingItem[];
   notifyGroups: NotifyGroupItem[];
   isVisible = false;
@@ -21,11 +23,27 @@ export class SettingComponent implements OnInit {
   // @ViewChild('inputElement') inputElement: ElementRef;
 
 
-  constructor(public api: NetworkService) { }
+  constructor(public api: NetworkService,
+    private queueService: QueuesService) { }
 
   ngOnInit() {
+    this.queueService.refershAppNames$.subscribe(apps => {
+      this.appNames = apps;
+    });
     this.loadSettings();
     this.loadNotifyGroups();
+  }
+
+  handleInputDelay(ele, group) {
+    setTimeout(_ => {
+      console.log(ele.classList);
+      if (ele === document.activeElement) {
+        this.handleInputConfirm(group);
+        console.log('has focus');
+      } else {
+        this.handleInputConfirm(group);
+      }
+    }, 500);
   }
 
   commitSetting(setting: SettingItem, ele) {

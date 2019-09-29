@@ -5,13 +5,13 @@
       <nz-form-label [nzSpan]="6" nzFor="queue">选择死信队列</nz-form-label>
       <nz-form-control [nzSpan]="14">
         <nz-select name="queue" [(ngModel)]="migrateFromQueue" nzShowSearch nzAllowClear nzPlaceHolder="Choose Dead Queue"
-          (ngModelChange)="onSelectQueueChanged($event)">
-          <nz-option-group *ngFor="let group of deadQueueGroups" [nzLabel]="groupLabel">
-            <ng-template #groupLabel>
-              <nz-tag [nzColor]="'orange'">{{group.host}}</nz-tag>
-            </ng-template>
-            <nz-option *ngFor="let queue of group.queues" [nzValue]="queue" nzLabel="{{queue.name}} [{{queue.messagesReady}}]"></nz-option>
-          </nz-option-group>
+        [compareWith]="compareFn" (ngModelChange)="onSelectQueueChanged($event)">
+            <nz-option-group *ngFor="let group of deadQueueGroups" [nzLabel]="groupLabel">
+              <ng-template #groupLabel>
+                <nz-tag [nzColor]="'orange'">{{group.host}}</nz-tag>
+              </ng-template>
+              <nz-option *ngFor="let q of group.queues" [nzValue]="q" [nzLabel]="q.name + ' [' + q.messages + ']'"></nz-option>
+            </nz-option-group>
         </nz-select>
       </nz-form-control>
     </nz-form-item>
@@ -28,28 +28,52 @@
     </nz-form-item>
 
     <nz-form-item *ngIf="bindInfo && bindInfo.length > 0">
+        <nz-form-control [nzOffset]="6" [nzSpan]="14">
+          <nz-alert  nzType="info"
+          nzMessage="一般情况不用选RoutingKey,迁移消息将自动使用消息自带的RoutingKey."
+          nzShowIcon></nz-alert>
+        </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item *ngIf="bindInfo && bindInfo.length > 0">
       <nz-form-label [nzSpan]="6" nzFor="routingkey">选择发送的routingkey</nz-form-label>
       <nz-form-control [nzSpan]="14">
           <nz-radio-group name="routingkey" [(ngModel)]="routingKey">
             <label class="routingKey" *ngFor="let bind of bindInfo" nz-radio nzValue="{{bind.routingKey}}">
                 使用Key: <nz-tag [nzColor]="'volcano'">{{bind.routingKey}}</nz-tag>
                 <br>
-                <span style="margin-left: 28px">消息将被Exchange路由到 {{bind.destinationType}}:</span>
+                <span style="margin-left: 28px; margin-right: 8px">消息路由到 {{bind.destinationType}}:</span>
                 <nz-tag [nzColor]="'blue'">{{bind.destination}}</nz-tag>
             </label>
           </nz-radio-group>
-
-          <nz-alert  nzType="info"
-          nzMessage="如果不选择RoutingKey,迁移消息将使用消息自带的RoutingKey."
-          nzShowIcon></nz-alert>
       </nz-form-control>
     </nz-form-item>
 
     <nz-form-item>
-      <nz-form-label [nzSpan]="6" nzFor="speed">消耗速度</nz-form-label>
+      <nz-form-label [nzSpan]="6" nzFor="speed">迁移速度</nz-form-label>
       <nz-form-control [nzSpan]="14">
         <nz-input-number name="speed" [(ngModel)]="consumSpeed" [nzMin]="1" [ngModelOptions]="{standalone: true}"></nz-input-number>
         <span style="margin-left: 10px">条/秒</span>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label [nzSpan]="6" nzFor="speed">迁移总量</nz-form-label>
+      <nz-form-control [nzSpan]="14">
+          <nz-row>
+              <nz-col nzSpan="12">
+                <nz-slider [nzMin]="1" [nzMax]="messageCount" [(ngModel)]="taskCount" [ngModelOptions]="{standalone: true}"></nz-slider>
+              </nz-col>
+              <div nz-col nzSpan="4">
+                <nz-input-number
+                  [nzMin]="1"
+                  [nzMax]="messageCount"
+                  [ngStyle]="{ marginLeft: '16px' }"
+                  [(ngModel)]="taskCount"
+                  [ngModelOptions]="{standalone: true}"
+                ></nz-input-number>
+              </div>
+            </nz-row>
       </nz-form-control>
     </nz-form-item>
 
@@ -93,4 +117,5 @@
       </nz-list-item>
     </ng-template>
   </nz-list>
+  <nz-pagination [nzPageIndex]="page" [nzTotal]="pageCount" (nzPageIndexChange)="onPageChanged($event)" [nzPageSize]="pageSize"></nz-pagination>
 </nz-card>

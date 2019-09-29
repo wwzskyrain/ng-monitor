@@ -89,6 +89,8 @@
             >
               {{ app }}
             </nz-tag>
+
+            <!-- (blur)="" -->
             <input
               #inputElement
               nz-input
@@ -96,10 +98,16 @@
               *ngIf="group.modifyApp"
               type="text"
               [(ngModel)]="inputValue"
-              style="width: 78px;"
-              (blur)="handleInputConfirm(group)"
+              style="width: 100px;"
               (keydown.enter)="handleInputConfirm(group)"
+              (blur)="handleInputDelay(inputElement, group)"
+              [nzAutocomplete]="auto"
             />
+            <nz-autocomplete nzWidth='100' #auto>
+              <nz-auto-option *ngFor="let appName of appNames" [nzValue]="appName">
+                {{ appName }}
+              </nz-auto-option>
+            </nz-autocomplete>
             <nz-tag *ngIf="!group.modifyApp" nzNoAnimation (click)="showInput(group, inputElement)">
               <i nz-icon type="plus"></i> 新增服务名
             </nz-tag>

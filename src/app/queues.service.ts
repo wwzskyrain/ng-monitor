@@ -7,11 +7,16 @@ import { QueueItemGroup } from './model/queueItem';
 })
 export class QueuesService {
 
+  // 更新迁移队列
   private queueEventSource = new Subject<QueueItemGroup[]>();
   public  queueEventSource$ = this.queueEventSource.asObservable();
 
-  private refreshAppPageSource = new Subject<number>();
-  public refreshAppPageSource$ = this.refreshAppPageSource.asObservable();
+  // 刷新business的队列和app的队列
+  private refreshEventSource = new Subject<boolean>();
+  public refreshEventSource$ = this.refreshEventSource.asObservable();
+
+  private refershAppNames = new Subject<string[]>();
+  public refershAppNames$ = this.refershAppNames.asObservable();
 
   constructor() { }
 
@@ -19,7 +24,11 @@ export class QueuesService {
     this.queueEventSource.next(e);
   }
 
-  fireRefreshAppPage() {
-    this.refreshAppPageSource.next(0);
+  fireRefreshEvent() {
+    this.refreshEventSource.next(true);
+  }
+
+  fireAppNameRefreshedEvent(appNames: string[]) {
+    this.refershAppNames.next(appNames);
   }
 }

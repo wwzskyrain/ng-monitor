@@ -2,7 +2,7 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { NetworkService } from '../network.service';
 import { AppItem } from '../model/appItem';
 import { QueuesService } from '../queues.service';
-import { QueueItemGroup } from '../model/queueItem';
+import { QueueItemGroup, QueueItem } from '../model/queueItem';
 
 @Component({
   selector: 'app-app',
@@ -20,14 +20,19 @@ export class AppQueueComponent implements OnInit {
     private queueService: QueuesService,
     private cd: ChangeDetectorRef) {
     this.appNameFilter = '';
-    this.queueService.refreshAppPageSource$.subscribe(_ => {
+
+    this.queueService.refreshEventSource$.subscribe(_ => {
       this.refresh();
-      this.cd.markForCheck();
     });
   }
 
   xdcsLink(appName) {
     return `http://xdcs.ximalaya.com/app_info?app_name=${appName}`;
+  }
+
+  getTotalMessageCount(queueInfoList: QueueItem[]): number {
+    return queueInfoList.map(item => item.messagesReady)
+                        .reduce((total, current) => total + current);
   }
 
   onAppNameFilterChanged(e) {
@@ -37,7 +42,7 @@ export class AppQueueComponent implements OnInit {
       this.appNameFilter = '';
     }
 
-    console.log(this.appNameFilter);
+    // console.log(this.appNameFilter);
     this.displayApps = this.apps.filter(app => app.appName.indexOf(this.appNameFilter) >= 0);
   }
 
@@ -67,7 +72,9 @@ export class AppQueueComponent implements OnInit {
 
   notifyDeadQueueChanged() {
     const deadQueueGroups = [];
+    const appNames = [];
     this.apps.forEach(app => {
+      appNames.push(app.appName);
       app.queueInfoList.forEach(
         q => {
           const group = deadQueueGroups.find(g => g.host === q.host);
@@ -79,6 +86,7 @@ export class AppQueueComponent implements OnInit {
         });
     });
     this.queueService.fireQueueGroup(deadQueueGroups);
+    this.queueService.fireAppNameRefreshedEvent(appNames);
   }
 
   ngOnInit() {

@@ -1,0 +1,11 @@
+<nz-modal nzWidth="900" [(nzVisible)]="isVisible" nzTitle="自定义监控队列" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
+  <nz-row>
+    <nz-col nzSpan="20"><input nz-input [(ngModel)]="queueName" [ngModelOptions]="{standalone: true}"></nz-col>
+    <nz-col><button nz-button (click)="onAddNewQueue()">添加新队列</button></nz-col>
+  </nz-row>
+  <ul>
+    <li *ngFor="let q of queue">{{q}}
+      <i  (click)="onRemoveQueue(q)" style="margin-left: 20px; color: red" nz-icon type="minus-circle" theme="outline"></i>
+    </li>
+  </ul>
+</nz-modal>

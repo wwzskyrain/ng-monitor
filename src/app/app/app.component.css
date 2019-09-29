@@ -13,12 +13,19 @@
     width: 100%;
     margin-bottom: 10px;
     line-height: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.appAdmin {
+    width: 400px;
 }
 
 .appItem {
     padding-left: 10px;
     padding-right: 10px;
-    border: lightgray 1px solid;
+    border: lightskyblue 1px solid;
     border-radius: 10px;
     flex-direction: column; 
     width: 100%
