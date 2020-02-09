@@ -2,4 +2,5 @@
   [nzWidth]="'80%'" [nzVisible]="visible" 
   [nzTitle]="selectQueue ? selectQueue.name + ' [' + selectQueue.messagesReady + ']' : ''" (nzOnClose)="hide()">
   <iframe width="100%" [height]="height" *ngIf="queueURL" [src]="queueURL" frameborder="0"></iframe>
+  
 </nz-drawer>

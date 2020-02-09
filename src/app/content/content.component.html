@@ -1,0 +1,15 @@
+
+<nz-list [nzDataSource]="messageContents" [nzRenderItem]="item" [nzBordered]=true [nzItemLayout]="'horizontal'">
+  <ng-template #item let-item>
+    <nz-list-item [nzContent]="itemContent">
+      <ng-template #itemContent>
+        消息内容：{{item.payload}}
+      </ng-template>
+      <nz-list-item-meta
+        nzTitle="routingKey:{{ item.routingKey }}"
+        nzAvatar="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
+      >
+      </nz-list-item-meta>
+    </nz-list-item>
+  </ng-template>
+</nz-list>

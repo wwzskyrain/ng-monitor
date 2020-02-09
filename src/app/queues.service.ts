@@ -31,4 +31,5 @@ export class QueuesService {
   fireAppNameRefreshedEvent(appNames: string[]) {
     this.refershAppNames.next(appNames);
   }
+
 }

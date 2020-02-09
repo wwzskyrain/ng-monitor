@@ -1,6 +1,6 @@
 import { Injectable, isDevMode } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, from } from 'rxjs';
 import { LResponse, OResponse } from './model/response';
 import { SettingItem } from './model/settingItem';
 import { QueueItem } from './model/queueItem';
@@ -13,6 +13,7 @@ import { AppItem } from './model/appItem';
 import { Ops } from './model/opsItem';
 import { NotifyGroupItem } from './model/notifyGroupItem';
 import { Page } from './model/page';
+import { MessageContent } from './model/messageContent';
 
 @Injectable({
   providedIn: 'root'
@@ -171,5 +172,10 @@ export class NetworkService {
   removeBusinessCustomQueue(queueName: string): Observable<OResponse<string>> {
     const url = this.host + `queue/remove-business-queue/${queueName}`;
     return this.http.get<OResponse<string>>(url);
+  }
+
+  getMessageContent(queueName: string): Observable<LResponse<MessageContent>> {
+    const url = this.host + `queue/message/${queueName}`;
+    return this.http.get<LResponse<MessageContent>>(url);
   }
 }
