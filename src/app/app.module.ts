@@ -14,7 +14,7 @@ import { MigrateComponent } from './migrate/migrate.component';
 import { SettingComponent } from './setting/setting.component';
 import { NodeComponent } from './node/node.component';
 import { AppQueueComponent } from './app/app.component';
-import { QueuedrawerComponent, NzDrawerCustomComponent } from './queuedrawer/queuedrawer.component';
+import { QueuedrawerComponent } from './queuedrawer/queuedrawer.component';
 import { CustomQueueDialogComponent } from './custom-queue-dialog/custom-queue-dialog.component';
 import { ContentComponent } from './content/content.component';
 
@@ -30,8 +30,7 @@ registerLocaleData(zh);
       AppQueueComponent,
       QueuedrawerComponent,
       CustomQueueDialogComponent,
-      ContentComponent,
-      NzDrawerCustomComponent
+      ContentComponent
    ],
    imports: [
       BrowserModule,
