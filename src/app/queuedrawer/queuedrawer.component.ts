@@ -2,7 +2,8 @@ import { Component, OnInit, Input } from '@angular/core';
 import { QueueItem } from '../model/queueItem';
 import { SafeResourceUrl, DomSanitizer } from '@angular/platform-browser';
 import { NzDrawerRef, NzDrawerService } from 'ng-zorro-antd/drawer';
-import { DrawerCustomComponent } from '../drawer-custom/drawer-custom.component';
+import { ContentComponent } from '../content/content.component';
+import { NetworkService } from '../network.service';
 
 @Component({
   selector: 'app-queuedrawer',
@@ -15,9 +16,10 @@ export class QueuedrawerComponent implements OnInit {
   queueURL: SafeResourceUrl;
   height: string;
 
+
   value = 'hello erik';
 
-  constructor(private sanitizer: DomSanitizer, private drawerService: NzDrawerService) {
+  constructor(private sanitizer: DomSanitizer, private drawerService: NzDrawerService, private netService: NetworkService) {
     this.height = (window.innerHeight - 115) + 'px';
   }
 
@@ -29,12 +31,14 @@ export class QueuedrawerComponent implements OnInit {
     // this.queueURL = this.sanitizer.bypassSecurityTrustResourceUrl(queue.url) ;
     // this.visible = true;
 
-    const drawerRef = this.drawerService.create<DrawerCustomComponent, { value: string }, string>({
+    const drawerRef = this.drawerService.create<ContentComponent, { queueName: string}, string>({
+      nzWidth: '80%',
+      nzBodyStyle: { overflow: 'auto' },
       nzTitle: 'Component',
-      nzContent: DrawerCustomComponent,
+      nzContent: ContentComponent,
       nzContentParams: {
-        value: this.value
-      }
+        queueName: queue.name
+      },
     });
 
     drawerRef.afterOpen.subscribe(() => {

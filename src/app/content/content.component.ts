@@ -23,6 +23,16 @@ export class ContentComponent implements OnInit {
       result => {
         if (result.code === 0) {
           this.messageContents = result.data;
+          for (const messageContent of this.messageContents) {
+            let prettyfiedContent: string ;
+            try {
+              const content = JSON.parse(messageContent.payload);
+              prettyfiedContent = JSON.stringify(content, null, 4);
+            } catch (e) {
+              prettyfiedContent = messageContent.payload;
+            }
+            messageContent.payload = prettyfiedContent;
+          }
         } else {
           console.log(result);
         }

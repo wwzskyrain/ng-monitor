@@ -13,10 +13,16 @@
 
   <app-queuedrawer #drawer></app-queuedrawer>
 
+  
   <nz-button-group>
     <button nz-button nzType="primary" (click)="refreshALL()"[nzLoading]="isLoading" >刷新</button>
   </nz-button-group>
 
+  <div style="overflow:hidden">
+    <input nz-input [(ngModel)]="queueName" placeholder='请输入队列的名字' style="width:600px;" />
+    <button nz-button nzType="primary" (click)="showMessageContent()"[nzLoading]="isLoading">显示消息内容</button>
+  </div>
+  
   <nz-tabset>
     <nz-tab nzTitle="商业化的死信队列">
       <button style="margin-left: 20px;" nz-button nzType="primary" (click)="dialog.show()">

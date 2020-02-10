@@ -3,6 +3,8 @@ import { NetworkService } from '../network.service';
 import { QueueItem } from '../model/queueItem';
 import { OpsService } from '../ops.service';
 import { QueuesService } from '../queues.service';
+import { NzDrawerRef, NzDrawerService } from 'ng-zorro-antd/drawer';
+import { ContentComponent } from '../content/content.component';
 
 
 @Component({
@@ -13,10 +15,12 @@ import { QueuesService } from '../queues.service';
 export class MainComponent implements OnInit {
   isLoading = false;
   deadQueues: QueueItem[];
+  queueName: string;
 
   constructor(public api: NetworkService,
     public opsService: OpsService,
     private queueService: QueuesService,
+    private drawerService: NzDrawerService,
     private cd: ChangeDetectorRef) {
   }
 
@@ -73,4 +77,18 @@ export class MainComponent implements OnInit {
       return 'red';
     }
   }
+
+  showMessageContent(): void {
+    const drawerRef = this.drawerService.create<ContentComponent, { queueName: string}, string>({
+      nzWidth: '80%',
+      nzBodyStyle: { overflow: 'auto' },
+      nzTitle: 'Component',
+      nzContent: ContentComponent,
+      nzContentParams: {
+        queueName: this.queueName
+      },
+    });
+  }
+
+
 }

@@ -1,12 +1,15 @@
 
 <nz-list [nzDataSource]="messageContents" [nzRenderItem]="item" [nzBordered]=true [nzItemLayout]="'horizontal'">
   <ng-template #item let-item>
-    <nz-list-item [nzContent]="itemContent">
+    <nz-list-item>
       <ng-template #itemContent>
-        消息内容：{{item.payload}}
+        消息内容:<br/>
+        <!-- <textarea rows="4" nz-input [ngModel]="item.payload" [disabled]="true"></textarea> -->
+        <pre>{{item.payload}}</pre>
       </ng-template>
       <nz-list-item-meta
         nzTitle="routingKey:{{ item.routingKey }}"
+        [nzDescription]="itemContent"
         nzAvatar="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
       >
       </nz-list-item-meta>
